@@ -1,33 +1,94 @@
-{% extends 'base.html' %} {% block description %} Welcome to my awesomely simple
-to-do list 😄 {% endblock %} {% block main %}
+{% extends 'base.html' %} {% block description %} Welcome back — pick up
+where you left off {% endblock %} {% block main %}
 <style>
-  input {
-    border-radius: 8px;
-    font-size: 18px;
-    padding: 10px 10px 10px 10px;
+  .auth-wrap {
+    max-width: 380px;
+    margin: 3rem auto;
+    padding: 0 1.25rem;
+  }
+  .auth-wrap form {
+    display: flex;
+    flex-direction: column;
+    gap: 1.1rem;
+  }
+  .field {
+    display: flex;
+    flex-direction: column;
+    gap: 0.35rem;
+  }
+  .field label {
+    padding: 0;
+    font-size: 0.85rem;
+    color: var(--ink-soft);
+    font-weight: 500;
+  }
+  input[type="text"],
+  input[type="password"] {
+    font-family: var(--font-body);
+    font-size: 1rem;
+    padding: 0.7rem 0.1rem;
     border: none;
-    background-color: rgb(216, 216, 216);
+    border-bottom: 2px solid var(--line);
+    background: transparent;
+    color: var(--ink);
+    transition: border-color 0.15s ease;
+  }
+  input[type="text"]:focus,
+  input[type="password"]:focus {
+    outline: none;
+    border-bottom-color: var(--accent);
+  }
+  input[type="submit"] {
+    margin-top: 0.5rem;
+    background: var(--ink);
+    color: var(--paper);
+    border: none;
+    border-radius: 4px;
+    padding: 0.8rem;
+    font-size: 1rem;
+    font-weight: 500;
+    cursor: pointer;
+    font-family: var(--font-body);
+  }
+  input[type="submit"]:hover {
+    background: var(--accent-dark);
   }
   p.flash {
-    color: red;
+    color: var(--brick);
+    font-size: 0.9rem;
+    margin: 1rem 0 0;
+  }
+  p.switch {
+    font-size: 0.9rem;
+    color: var(--ink-soft);
+    margin-top: 1.5rem;
+    text-align: center;
+  }
+  p.switch a {
+    color: var(--accent-dark);
+    font-weight: 500;
   }
 </style>
-<br /><br />
-<div align="center">
+<div class="auth-wrap">
   <form action="/login" method="post">
-    <br /><br />
-    <input type="text" placeholder="Enter Name" name="name" /><br /><br />
-    <input
-      type="password"
-      placeholder="Enter Password"
-      name="pwd"
-    /><br /><br />
-    <input type="submit" value="login" />
+    <div class="field">
+      <label for="name">Name</label>
+      <input type="text" id="name" placeholder="Enter your name" name="name" />
+    </div>
+    <div class="field">
+      <label for="pwd">Password</label>
+      <input
+        type="password"
+        id="pwd"
+        placeholder="Enter your password"
+        name="pwd"
+      />
+    </div>
+    <input type="submit" value="Log in" />
   </form>
-  <br /><br />
   {% with messages = get_flashed_messages() %} {% if messages %}
   <p class="flash">{{ messages[0] }}</p>
   {% endif %} {% endwith %}
-  <p>Dont have an account? <a href="/register">click to register</a></p>
+  <p class="switch">Don't have an account? <a href="/register">Create one</a></p>
 </div>
 {% endblock %}

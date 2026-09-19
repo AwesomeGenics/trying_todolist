@@ -1,28 +1,89 @@
-{%extends 'base.html' %} {% block description %} Register to my awesomely simple
-to-do list :) {% endblock %} {% block main %}
+{%extends 'base.html' %} {% block description %} Set up your account in a
+few seconds {% endblock %} {% block main %}
 <style>
-  input {
-    border-radius: 8px;
-    font-size: 18px;
-    padding: 10px 10px 10px 10px;
-    border: none;
-    background-color: rgb(216, 216, 216);
+  .auth-wrap {
+    max-width: 380px;
+    margin: 3rem auto;
+    padding: 0 1.25rem;
   }
-  p {
-    color: red;
+  .auth-wrap form {
+    display: flex;
+    flex-direction: column;
+    gap: 1.1rem;
+  }
+  .field {
+    display: flex;
+    flex-direction: column;
+    gap: 0.35rem;
+  }
+  .field label {
+    padding: 0;
+    font-size: 0.85rem;
+    color: var(--ink-soft);
+    font-weight: 500;
+  }
+  input[type="text"],
+  input[type="password"],
+  input[type="email"] {
+    font-family: var(--font-body);
+    font-size: 1rem;
+    padding: 0.7rem 0.1rem;
+    border: none;
+    border-bottom: 2px solid var(--line);
+    background: transparent;
+    color: var(--ink);
+    transition: border-color 0.15s ease;
+  }
+  input[type="text"]:focus,
+  input[type="password"]:focus,
+  input[type="email"]:focus {
+    outline: none;
+    border-bottom-color: var(--accent);
+  }
+  input[type="submit"] {
+    margin-top: 0.5rem;
+    background: var(--ink);
+    color: var(--paper);
+    border: none;
+    border-radius: 4px;
+    padding: 0.8rem;
+    font-size: 1rem;
+    font-weight: 500;
+    cursor: pointer;
+    font-family: var(--font-body);
+  }
+  input[type="submit"]:hover {
+    background: var(--accent-dark);
+  }
+  p.notice {
+    color: var(--brick);
+    font-size: 0.9rem;
+    margin-top: 1rem;
   }
 </style>
-<br /><br />
-<div align="center">
+<div class="auth-wrap">
   <form action="/register" method="post">
-    <input type="text" placeholder="Name" name="name" /><br /><br />
-    <input type="password" placeholder="Password" name="pwd" /><br /><br />
-    <input type="email" placeholder="email" name="email" /><br /><br />
-    <input type="submit" value="Register" />
+    <div class="field">
+      <label for="name">Name</label>
+      <input type="text" id="name" placeholder="Your name" name="name" />
+    </div>
+    <div class="field">
+      <label for="pwd">Password</label>
+      <input
+        type="password"
+        id="pwd"
+        placeholder="Choose a password"
+        name="pwd"
+      />
+    </div>
+    <div class="field">
+      <label for="email">Email</label>
+      <input type="email" id="email" placeholder="you@example.com" name="email" />
+    </div>
+    <input type="submit" value="Create account" />
   </form>
   {% with messages = get_flashed_messages() %} {% if messages %}
-  <p>{{ messages[0] }}</p>
+  <p class="notice">{{ messages[0] }}</p>
   {% endif %} {% endwith %}
 </div>
-
 {% endblock %}

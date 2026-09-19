@@ -3,56 +3,113 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Document</title>
+    <title>To-Do List</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,600&family=Inter:wght@400;500;600&display=swap"
+      rel="stylesheet"
+    />
     <style>
-      header {
-        background-color: #06d6a0;
-        text-align: center;
-        font-family: Arial, Helvetica, sans-serif;
-        padding: 20px 20px 20px 20px;
+      :root {
+        --paper: #efebde;
+        --paper-soft: #f5f2e8;
+        --ink: #24211c;
+        --ink-soft: #5b5648;
+        --accent: #5f6e38;
+        --accent-dark: #4a5629;
+        --brick: #9c4a3c;
+        --line: #d8d1bc;
+        --font-display: "Fraunces", Georgia, serif;
+        --font-body: "Inter", system-ui, -apple-system, sans-serif;
       }
-      footer {
-        background-color: #06d6a0;
-        text-align: center;
-        padding: 20px 20px 20px 20px;
+      * {
+        box-sizing: border-box;
       }
       body {
-        /* Use the full height of the device screen */
         min-height: 100dvh;
-
-        /* Turn the body into a flexbox column layout */
         display: flex;
         flex-direction: column;
         margin: 0;
+        background: var(--paper);
+        color: var(--ink);
+        font-family: var(--font-body);
+        line-height: 1.5;
       }
-
       main {
-        /* This allows the main section to grow and take up all available space */
         flex-grow: 1;
+        width: 100%;
       }
-
+      header {
+        background: var(--paper-soft);
+        border-bottom: 2px solid var(--ink);
+        padding: 2rem 1.25rem 1.5rem;
+        text-align: center;
+      }
+      header h1 {
+        font-family: var(--font-display);
+        font-weight: 600;
+        font-size: clamp(1.6rem, 4vw, 2.3rem);
+        margin: 0 0 0.35rem;
+        letter-spacing: -0.01em;
+      }
+      header p.tagline {
+        margin: 0 auto 1.1rem;
+        max-width: 34ch;
+        color: var(--ink-soft);
+        font-size: 0.95rem;
+      }
+      nav {
+        display: flex;
+        justify-content: center;
+        flex-wrap: wrap;
+        gap: 0.75rem 1.5rem;
+      }
+      nav a {
+        color: var(--ink);
+        text-decoration: none;
+        font-weight: 500;
+        font-size: 0.95rem;
+        padding-bottom: 2px;
+        background-image: linear-gradient(var(--accent), var(--accent));
+        background-repeat: no-repeat;
+        background-size: 0% 2px;
+        background-position: left bottom;
+        transition: background-size 0.2s ease;
+      }
+      nav a:hover,
+      nav a:focus-visible {
+        background-size: 100% 2px;
+      }
+      nav a:focus-visible {
+        outline: 2px solid var(--accent);
+        outline-offset: 4px;
+        border-radius: 2px;
+      }
       footer {
-        /* Ensures the footer gets pushed to the absolute bottom if content is short */
+        border-top: 1px solid var(--line);
+        text-align: center;
+        padding: 1.25rem;
         margin-top: auto;
+        color: var(--ink-soft);
+        font-size: 0.85rem;
       }
       label {
-        padding: 20px 20px;
+        padding: 0;
       }
     </style>
   </head>
   <body>
     <header>
-      <h1>Extremely Basic To-do List</h1>
-
+      <h1>To-Do List</h1>
+      <p class="tagline">{% block description %} {% endblock %}</p>
       <nav>
-        <label><a href="/add">Add a Task</a></label>
-        <label><a href="/home">View all tasks</a></label>
-        <label><a href="/logout">Logout</a></label>
+        <a href="/add">Add a task</a>
+        <a href="/home">View all tasks</a>
+        <a href="/logout">Logout</a>
       </nav>
-      <br />
-      {% block description %} {% endblock %}
     </header>
     <main>{% block main %} {% endblock %}</main>
-    <footer>Kaisi lag rhi website do let me know :)</footer>
+    <footer>Kaisi lag rhi website, do let me know :)</footer>
   </body>
 </html>
