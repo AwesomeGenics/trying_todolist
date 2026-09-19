@@ -1,0 +1,4 @@
+__pycache__/
+venv/
+tasks.db
+flask_session/

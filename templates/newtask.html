@@ -1,0 +1,25 @@
+{%extends 'base.html' %} {%block description%} This is where you enter your
+tasks and save them... {%endblock%} {% block main %}
+<style>
+  input {
+    border-radius: 8px;
+    font-size: 18px;
+    padding: 10px 10px 10px 10px;
+    border: none;
+    background-color: rgb(216, 216, 216);
+  }
+  p {
+    color: red;
+  }
+</style>
+<br /><br />
+<div align="center">
+  <form action="/add" method="post">
+    Task Name: <input type="text" name="task" id="" /><br /><br />
+    <input type="submit" value="Submit Task" />
+  </form>
+  {% with messages = get_flashed_messages()%} {%if messages%}
+  <p>{{messages[0]}}</p>
+  {%endif%} {%endwith%}
+</div>
+{%endblock%}

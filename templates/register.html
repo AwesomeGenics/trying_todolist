@@ -1,0 +1,28 @@
+{%extends 'base.html' %} {% block description %} Register to my awesomely simple
+to-do list :) {% endblock %} {% block main %}
+<style>
+  input {
+    border-radius: 8px;
+    font-size: 18px;
+    padding: 10px 10px 10px 10px;
+    border: none;
+    background-color: rgb(216, 216, 216);
+  }
+  p {
+    color: red;
+  }
+</style>
+<br /><br />
+<div align="center">
+  <form action="/register" method="post">
+    <input type="text" placeholder="Name" name="name" /><br /><br />
+    <input type="password" placeholder="Password" name="pwd" /><br /><br />
+    <input type="email" placeholder="email" name="email" /><br /><br />
+    <input type="submit" value="Register" />
+  </form>
+  {% with messages = get_flashed_messages() %} {% if messages %}
+  <p>{{ messages[0] }}</p>
+  {% endif %} {% endwith %}
+</div>
+
+{% endblock %}

@@ -1,0 +1,53 @@
+{%extends 'base.html' %} {%block description%} Indivisual Task Deletion,
+Seperate Tasks per Account are here, let me know if there is a feedback you
+wanna give {%endblock%} {% block main%}
+<style>
+  button {
+    font-size: 16px;
+    border: none;
+    border-radius: 5px;
+    padding: 10px 10px 10px 10px;
+    color: white;
+  }
+  input {
+    font-size: 16px;
+    border: none;
+    border-radius: 5px;
+    padding: 10px 10px 10px 10px;
+  }
+  div.loop {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    width: 90%;
+    max-width: 700px;
+    margin: 0 auto;
+  }
+  div.clear {
+    width: 90%;
+    max-width: 100px;
+    margin: 0 auto;
+  }
+</style>
+<br />
+
+{%for num, task, name in tasksaslist%}
+<div class="loop">
+  <span> &nbsp; {{ task }}</span>
+  &emsp;
+  <form action="/delete/{{num}}" method="post">
+    <input type="submit" value="delete" name="delete" />
+  </form>
+</div>
+<br /><br />
+{%endfor%}
+<br />
+<br />
+<div class="clear">
+  <form action="/home" method="post">
+    <em><input type="submit" value="Clear List" /></em>
+  </form>
+  {{name}}
+</div>
+<br /><br />
+{%endblock%}

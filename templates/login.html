@@ -1,0 +1,33 @@
+{% extends 'base.html' %} {% block description %} Welcome to my awesomely simple
+to-do list 😄 {% endblock %} {% block main %}
+<style>
+  input {
+    border-radius: 8px;
+    font-size: 18px;
+    padding: 10px 10px 10px 10px;
+    border: none;
+    background-color: rgb(216, 216, 216);
+  }
+  p.flash {
+    color: red;
+  }
+</style>
+<br /><br />
+<div align="center">
+  <form action="/login" method="post">
+    <br /><br />
+    <input type="text" placeholder="Enter Name" name="name" /><br /><br />
+    <input
+      type="password"
+      placeholder="Enter Password"
+      name="pwd"
+    /><br /><br />
+    <input type="submit" value="login" />
+  </form>
+  <br /><br />
+  {% with messages = get_flashed_messages() %} {% if messages %}
+  <p class="flash">{{ messages[0] }}</p>
+  {% endif %} {% endwith %}
+  <p>Dont have an account? <a href="/register">click to register</a></p>
+</div>
+{% endblock %}
