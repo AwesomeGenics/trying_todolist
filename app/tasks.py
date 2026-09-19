@@ -16,6 +16,8 @@ def add_task():
             a = f'INSERT INTO owner_task (owner, task_name) VALUES (?,?)'
             csr.execute(a, (session['name'], new_task,))
             conn.commit()
+            flash('Previous task was saved successfully!')
+            return redirect('/add')
         else:
             flash('Task cannot be empty')
             return redirect('/add')
@@ -26,7 +28,7 @@ def add_task():
 @task_bp.route('/home', methods=['GET','POST'])
 def task_list():
     if request.method == 'POST':
-        csr.execute('DELETE FROM owner_task')
+        csr.execute('DELETE FROM owner_task WHERE owner = ?',(session['name'],))
         conn.commit()
 
     if not session.get('name'):
@@ -35,13 +37,36 @@ def task_list():
     else:
         result = csr.execute('SELECT * FROM owner_task WHERE owner = ?',
                              (session['name'],))
-        return render_template('listview.html', tasksaslist = result)
+        result_list = result.fetchall()
+        
+        csr.execute('SELECT owner, task_name FROM owner_task_done WHERE owner = ?', (session['name'],))
+        
+        donetasks = csr.fetchall()
+        return render_template('listview.html', tasksaslist=result_list, 
+                                donetasks=donetasks, name=session['name'])
+        # return render_template('listview.html', tasksaslist = result)
+
     
 
 # So inputing num in decorator makes it available to use for python ops
 @task_bp.route('/delete/<int:num>', methods=['GET','POST'])
 def delete(num):
-    a = f'DELETE FROM owner_task WHERE id = ?'
-    csr.execute(a, (num,))
-    conn.commit()
+    csr.execute('SELECT * FROM owner_task WHERE id = ?', (num,))
+    c = csr.fetchone()
+    if c is not None:
+        csr.execute(
+            'INSERT INTO owner_task_done (owner, task_name) VALUES (?, ?)',
+            (c['owner'], c['task_name'])
+        )
+        csr.execute('DELETE FROM owner_task WHERE id = ?', (num,))
+        conn.commit()
     return redirect('/home')
+
+
+@task_bp.route('/home_done', methods=['POST'])
+def done_task():
+    if request.method == 'POST':
+        if request.method == 'POST':
+            csr.execute('DELETE FROM owner_task_done WHERE owner = ?',(session['name'],))
+            conn.commit()
+            return redirect('/home')

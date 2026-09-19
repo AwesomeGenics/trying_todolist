@@ -1,5 +1,5 @@
-{%extends 'base.html' %} {% block description %} Set up your account in a
-few seconds {% endblock %} {% block main %}
+{%extends 'base.html' %} {% block description %} Set up your account in a few
+seconds {% endblock %} {% block main %}
 <style>
   .auth-wrap {
     max-width: 380px;
@@ -59,6 +59,7 @@ few seconds {% endblock %} {% block main %}
     color: var(--brick);
     font-size: 0.9rem;
     margin-top: 1rem;
+    text-align: center;
   }
 </style>
 <div class="auth-wrap">
@@ -78,7 +79,12 @@ few seconds {% endblock %} {% block main %}
     </div>
     <div class="field">
       <label for="email">Email</label>
-      <input type="email" id="email" placeholder="you@example.com" name="email" />
+      <input
+        type="email"
+        id="email"
+        placeholder="you@example.com"
+        name="email"
+      />
     </div>
     <input type="submit" value="Create account" />
   </form>
@@ -86,4 +92,9 @@ few seconds {% endblock %} {% block main %}
   <p class="notice">{{ messages[0] }}</p>
   {% endif %} {% endwith %}
 </div>
+<script>
+  var logout = document.getElementById("logout");
+  logout.innerText = "Login";
+  logout.setAttribute("href", "/login");
+</script>
 {% endblock %}

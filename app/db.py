@@ -17,3 +17,10 @@ CREATE TABLE IF NOT EXISTS owner_task(
     task_name TEXT NOT NULL,
     owner TEXT NOT NULL)
 ''')
+
+csr.execute('''
+CREATE TABLE IF NOT EXISTS owner_task_done(
+    id INTEGER PRIMARY KEY,
+    task_name TEXT NOT NULL,
+    owner TEXT NOT NULL)
+''')

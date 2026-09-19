@@ -1,6 +1,6 @@
 {%extends 'base.html' %} {%block description%} Individual task deletion,
-separate tasks per account — let me know if you've got feedback {%endblock%}
-{% block main%}
+separate tasks per account — let me know if you've got feedback {%endblock%} {%
+block main%}
 <style>
   .wrap {
     max-width: 640px;
@@ -17,15 +17,25 @@ separate tasks per account — let me know if you've got feedback {%endblock%}
     display: flex;
     align-items: center;
     gap: 0.85rem;
-    padding: 1rem 0;
+    padding: 1rem 0.5rem;
+    margin: 0 -0.5rem;
     border-bottom: 1px solid var(--line);
+    border-radius: var(--radius);
+    transition: background-color 0.2s var(--ease);
+  }
+  ul.tasks li:hover {
+    background-color: rgba(95, 110, 56, 0.06);
   }
   ul.tasks li .marker {
     flex-shrink: 0;
     width: 16px;
     height: 16px;
     border: 2px solid var(--accent);
-    border-radius: 3px;
+    border-radius: 5px;
+    transition: background-color 0.2s var(--ease);
+  }
+  ul.tasks li:hover .marker {
+    background-color: rgba(95, 110, 56, 0.18);
   }
   ul.tasks li .task-text {
     flex-grow: 1;
@@ -36,21 +46,31 @@ separate tasks per account — let me know if you've got feedback {%endblock%}
     margin: 0;
   }
   ul.tasks li button.delete {
+    flex-shrink: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 32px;
+    height: 32px;
     background: none;
     border: none;
-    color: var(--brick);
-    font-family: var(--font-body);
-    font-size: 0.85rem;
-    font-weight: 500;
+    border-radius: 50%;
+    color: var(--ink-soft);
     cursor: pointer;
-    padding: 4px 2px;
-    text-decoration: underline;
-    text-decoration-color: transparent;
-    transition: text-decoration-color 0.15s ease;
+    padding: 0;
+    transition:
+      background-color 0.2s var(--ease),
+      color 0.2s var(--ease);
   }
   ul.tasks li button.delete:hover,
   ul.tasks li button.delete:focus-visible {
-    text-decoration-color: var(--brick);
+    background-color: rgba(156, 74, 60, 0.12);
+    color: var(--brick);
+    outline: none;
+  }
+  ul.tasks li button.delete svg {
+    width: 16px;
+    height: 16px;
   }
   .footer-row {
     display: flex;
@@ -66,40 +86,238 @@ separate tasks per account — let me know if you've got feedback {%endblock%}
     background: var(--ink);
     color: var(--paper);
     border: none;
-    border-radius: 4px;
+    border-radius: var(--radius);
     padding: 0.65rem 1.1rem;
     font-family: var(--font-body);
     font-size: 0.9rem;
     font-weight: 500;
     cursor: pointer;
+    transition:
+      background-color 0.2s var(--ease),
+      transform 0.2s var(--ease),
+      box-shadow 0.2s var(--ease);
   }
   .footer-row button:hover {
     background: var(--accent-dark);
+    transform: translateY(-1px);
+    box-shadow: var(--shadow);
+  }
+  .footer-row button:active {
+    transform: translateY(0);
   }
   .signed-in {
     color: var(--ink-soft);
     font-size: 0.9rem;
   }
+  .empty {
+    color: var(--ink-soft);
+    text-align: center;
+    padding: 1.5rem 0;
+    margin: 0 0 2rem;
+  }
+  .tabs-wrap {
+    display: flex;
+    justify-content: center;
+    margin-bottom: 1.5rem;
+  }
+  .tabs {
+    position: relative;
+    display: inline-flex;
+    background: var(--paper-soft);
+    border: 1px solid var(--line);
+    border-radius: 999px;
+    padding: 4px;
+  }
+  .tab-btn {
+    position: relative;
+    z-index: 1;
+    width: 130px;
+    border: none;
+    background: none;
+    font-family: var(--font-body);
+    font-size: 0.9rem;
+    font-weight: 500;
+    color: var(--ink-soft);
+    padding: 0.55rem 1rem;
+    border-radius: 999px;
+    cursor: pointer;
+    transition: color 0.2s var(--ease);
+  }
+  .tab-btn.active {
+    color: var(--paper);
+  }
+  .tab-indicator {
+    position: absolute;
+    top: 4px;
+    left: 4px;
+    width: 130px;
+    height: calc(100% - 8px);
+    background: var(--ink);
+    border-radius: 999px;
+    transition: transform 0.25s var(--ease);
+    z-index: 0;
+  }
+  .panel[hidden] {
+    display: none;
+  }
+  ul.tasks.completed .marker {
+    background: var(--accent);
+    border-color: var(--accent);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  ul.tasks.completed .marker svg {
+    width: 10px;
+    height: 10px;
+    stroke: var(--paper);
+  }
+  ul.tasks.completed .task-text {
+    text-decoration: line-through;
+    color: var(--ink-soft);
+  }
+  ul.tasks.completed li:hover {
+    background-color: transparent;
+  }
 </style>
 <div class="wrap">
-  <ul class="tasks">
-    {%for num, task, name in tasksaslist%}
-    <li>
-      <span class="marker"></span>
-      <span class="task-text">{{ task }}</span>
-      <form action="/delete/{{num}}" method="post">
-        <button type="submit" name="delete" value="delete" class="delete">
-          delete
-        </button>
+  <div class="tabs-wrap">
+    <div class="tabs" role="tablist">
+      <button
+        type="button"
+        class="tab-btn active"
+        data-target="pending"
+        role="tab"
+        aria-selected="true"
+      >
+        Pending
+      </button>
+      <button
+        type="button"
+        class="tab-btn"
+        data-target="completed"
+        role="tab"
+        aria-selected="false"
+      >
+        Completed
+      </button>
+      <span class="tab-indicator" aria-hidden="true"></span>
+    </div>
+  </div>
+
+  <div class="panel" id="panel-pending" role="tabpanel">
+    <ul class="tasks" id="task-list">
+      {%for num, task, name in tasksaslist%}
+      <li>
+        <!-- <span class="marker"></span> -->
+        <span class="task-text">{{ task }}</span>
+        <form action="/delete/{{num}}" method="post">
+          <button
+            type="submit"
+            name="delete"
+            value="delete"
+            class="delete"
+            aria-label="Delete task"
+            title="Delete task"
+          >
+            <svg
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+            >
+              <path d="M3 6h18" />
+              <path d="M8 6V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2" />
+              <path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6" />
+              <path d="M10 11v6" />
+              <path d="M14 11v6" />
+            </svg>
+          </button>
+        </form>
+      </li>
+      {%endfor%}
+    </ul>
+    <p class="empty" id="empty-msg" hidden>No tasks added yet.</p>
+    <div class="footer-row">
+      <form action="/home" method="post" id="clear-form">
+        <button type="submit">Clear list</button>
+        <!-- YE VAALA PENDING KA HAI -->
       </form>
-    </li>
-    {%endfor%}
-  </ul>
-  <div class="footer-row">
-    <form action="/home" method="post">
-      <button type="submit">Clear list</button>
-    </form>
-    <span class="signed-in">{{name}}</span>
+      <!-- <span class="signed-in">{{name}}</span> -->
+    </div>
+  </div>
+
+  <div class="panel" id="panel-completed" role="tabpanel" hidden>
+    <ul class="tasks completed" id="completed-list">
+      {% for owner, task_name in donetasks %}
+      <li>
+        <span class="marker">
+          <svg
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="3"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+          >
+            <path d="M4 12l5 5L20 6" />
+          </svg>
+        </span>
+        <span class="task-text">{{ task_name }}</span>
+      </li>
+      {% endfor %}
+    </ul>
+    <p class="empty" id="completed-empty-msg" hidden>No completed tasks yet.</p>
+    <div class="footer-row">
+      <form action="/home_done" method="post" id="clear-form-done">
+        <!-- YE VAALA COMPLETED KA HAI -->
+        <button type="submit">Clear list</button>
+      </form>
+      <!-- <span class="signed-in">{{name}}</span> -->
+    </div>
   </div>
 </div>
+<script>
+  (function () {
+    var pendingList = document.getElementById("task-list");
+    var completedList = document.getElementById("completed-list");
+    var clearForm = document.getElementById("clear-form");
+    var clearFormDone = document.getElementById("clear-form-done");
+    var pendingEmptyMsg = document.getElementById("empty-msg");
+    var completedEmptyMsg = document.getElementById("completed-empty-msg");
+
+    var hasPending = pendingList.children.length > 0;
+    clearForm.hidden = !hasPending;
+    pendingEmptyMsg.hidden = hasPending;
+
+    var hasCompleted = completedList.children.length > 0;
+    clearFormDone.hidden = !hasCompleted;
+    completedEmptyMsg.hidden = hasCompleted;
+
+    var tabs = document.querySelectorAll(".tab-btn");
+    var indicator = document.querySelector(".tab-indicator");
+    var panels = {
+      pending: document.getElementById("panel-pending"),
+      completed: document.getElementById("panel-completed"),
+    };
+
+    tabs.forEach(function (btn, i) {
+      btn.addEventListener("click", function () {
+        tabs.forEach(function (b) {
+          b.classList.remove("active");
+          b.setAttribute("aria-selected", "false");
+        });
+        btn.classList.add("active");
+        btn.setAttribute("aria-selected", "true");
+        indicator.style.transform = "translateX(" + i * 100 + "%)";
+
+        Object.keys(panels).forEach(function (key) {
+          panels[key].hidden = key !== btn.dataset.target;
+        });
+      });
+    });
+  })();
+</script>
 {%endblock%}
